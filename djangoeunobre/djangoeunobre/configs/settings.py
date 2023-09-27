@@ -9,24 +9,35 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+from decouple import config, Csv
+from dj_database_url import parse as dburl
+from .configs  import DEFAULT_DATABASE_URL
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+APP_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(APP_ROOT))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*jq99&je9v8i-%0$7en&+ki*&wmzgz5-cev%nxx=@@gvk_qctw'
+SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = 'django-insecure-*jq99&je9v8i-%0$7en&+ki*&wmzgz5-cev%nxx=@@gvk_qctw'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
+if not DEFAULT_DATABASE_URL:
+    DEFAULT_DATABASE_URL = 'sqlite:///' + os.path.join(APP_ROOT, 'db.sqlite3')
+
+DATABASES = {
+    'default': config('DATABASE_URL', default=DEFAULT_DATABASE_URL, cast=dburl),
+}
 
 # Application definition
 
@@ -55,7 +66,7 @@ ROOT_URLCONF = 'djangoeunobre.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(APP_ROOT, 'templates')], # caminho para a pasta templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,12 +85,12 @@ WSGI_APPLICATION = 'djangoeunobre.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -104,11 +115,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pr-br'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 
@@ -118,6 +132,16 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+FIXTURE_DIRS = [
+    os.path.join(APP_ROOT, 'fixtures'),
+]
+
+
+
+MEDIA_ROOT = os.path.join(APP_ROOT, 'media/')
+MEDIA_URL = 'media/'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

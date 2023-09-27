@@ -1,0 +1,5 @@
+Criar um alias com seguinte comando
+
+Set-Alias -Name criarapp -Value C:\Users\jacks\EunobreERP\djangoeunobre\criarapp
+
+
