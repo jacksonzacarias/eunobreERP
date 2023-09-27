@@ -1,0 +1,93 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class auth_user {
+   password: varchar(128)
+   last_login: datetime
+   is_superuser: bool
+   username: varchar(150)
+   last_name: varchar(150)
+   email: varchar(254)
+   is_staff: bool
+   is_active: bool
+   date_joined: datetime
+   first_name: varchar(150)
+   id: integer
+}
+class cadastro_banco {
+   banco: varchar(3)
+   agencia: varchar(8)
+   conta: varchar(32)
+   digito: varchar(8)
+   pessoa_banco_id: integer
+   id: integer
+}
+class cadastro_email {
+   email: varchar(255)
+   pessoa_email_id: integer
+   id: integer
+}
+class cadastro_empresa {
+   logo_file: varchar(100)
+   cnae: varchar(10)
+   iest: varchar(32)
+   pessoa_ptr_id: integer
+}
+class cadastro_endereco {
+   tipo_endereco: varchar(3)
+   logradouro: varchar(255)
+   numero: varchar(16)
+   bairro: varchar(64)
+   complemento: varchar(64)
+   pais: varchar(32)
+   cpais: varchar(5)
+   municipio: varchar(64)
+   cmun: varchar(9)
+   cep: varchar(16)
+   uf: varchar(3)
+   pessoa_end_id: integer
+   id: integer
+}
+class cadastro_pessoa {
+   nome_razao_social: varchar(255)
+   tipo_pessoa: varchar(2)
+   inscricao_municipal: varchar(32)
+   informacoes_adicionais: varchar(1055)
+   data_criacao: datetime
+   data_edicao: datetime
+   banco_padrao_id: integer
+   criado_por_id: integer
+   email_padrao_id: integer
+   endereco_padrao_id: integer
+   site_padrao_id: integer
+   telefone_padrao_id: integer
+   id: integer
+}
+class cadastro_site {
+   site: varchar(255)
+   pessoa_site_id: integer
+   id: integer
+}
+class cadastro_telefone {
+   tipo_telefone: varchar(8)
+   telefone: varchar(32)
+   pessoa_tel_id: integer
+   id: integer
+}
+
+cadastro_banco     -[#595959,plain]-^  cadastro_pessoa   : "pessoa_banco_id:id"
+cadastro_email     -[#595959,plain]-^  cadastro_pessoa   : "pessoa_email_id:id"
+cadastro_empresa   -[#595959,plain]-^  cadastro_pessoa   : "pessoa_ptr_id:id"
+cadastro_endereco  -[#595959,plain]-^  cadastro_pessoa   : "pessoa_end_id:id"
+cadastro_pessoa    -[#595959,plain]-^  auth_user         : "criado_por_id:id"
+cadastro_pessoa    -[#595959,plain]-^  cadastro_banco    : "banco_padrao_id:id"
+cadastro_pessoa    -[#595959,plain]-^  cadastro_email    : "email_padrao_id:id"
+cadastro_pessoa    -[#595959,plain]-^  cadastro_endereco : "endereco_padrao_id:id"
+cadastro_pessoa    -[#595959,plain]-^  cadastro_site     : "site_padrao_id:id"
+cadastro_pessoa    -[#595959,plain]-^  cadastro_telefone : "telefone_padrao_id:id"
+cadastro_site      -[#595959,plain]-^  cadastro_pessoa   : "pessoa_site_id:id"
+cadastro_telefone  -[#595959,plain]-^  cadastro_pessoa   : "pessoa_tel_id:id"
+@enduml
